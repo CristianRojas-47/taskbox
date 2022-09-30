@@ -6,13 +6,21 @@ import { Task } from '../models/task.model';
 // Defines the actions available to the app
 export const actions = {
   ARCHIVE_TASK: 'ARCHIVE_TASK',
-  PIN_TASK: 'PIN_TASK',
+  PIN_TASK: 'PIN_TASK',  
+  ERROR: 'APP_ERROR',
+
 };
 
 export class ArchiveTask {
   static readonly type = actions.ARCHIVE_TASK;
 
   constructor(public payload: string) {}
+}
+
+// The class definition for our error field
+export class AppError {
+  static readonly type = actions.ERROR;
+  constructor(public payload: boolean) {}
 }
 
 export class PinTask {
@@ -82,7 +90,7 @@ export class TasksState {
       );
     }
   }
-  
+
   // Triggers the archiveTask action, similar to redux
   @Action(ArchiveTask)
   archiveTask(
@@ -104,5 +112,17 @@ export class TasksState {
         })
       );
     }
+  }
+
+  // Function to handle how the state should be updated when the action is triggered
+  @Action(AppError)
+  setAppError(
+    { patchState, getState }: StateContext<TaskStateModel>,
+    { payload }: AppError
+  ) {
+    const state = getState();
+    patchState({
+      error: !state.error,
+    });
   }
 }
